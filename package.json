@@ -1,0 +1,33 @@
+{
+  "name": "element-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean && babel --out-dir dist src",
+    "local": "nodemon src/index.js --exec babel-node --ignore storage-bot.json",
+    "pretty": "prettier --write \"./src/**/*.{js,ts,json}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@polkadot/util-crypto": "^10.1.1",
+    "matrix-bot-sdk": "^0.6.1",
+    "sequelize": "^6.21.3",
+    "sqlite3": "^5.0.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.18.9",
+    "@babel/core": "^7.18.9",
+    "@babel/eslint-parser": "^7.18.9",
+    "@babel/node": "^7.18.9",
+    "@babel/plugin-transform-runtime": "^7.18.9",
+    "@babel/preset-env": "^7.18.9",
+    "core-js": "^3.23.5",
+    "eslint": "^8.20.0",
+    "nodemon": "^2.0.19",
+    "prettier": "^2.7.1"
+  }
+}
