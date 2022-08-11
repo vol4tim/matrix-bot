@@ -65,7 +65,7 @@ async function handleCommand(roomId, event) {
 
   const body = event.content.body;
 
-  let user = await User.findOne({ where: { roomId } });
+  let user = await User.findOne({ where: { userId: event.sender } });
   if (user === null) {
     user = await User.create({
       userId: event.sender,
