@@ -5,6 +5,7 @@ import {
 } from "matrix-bot-sdk";
 import { encodeAddress, isAddress } from "@polkadot/util-crypto";
 import User from "./models/user";
+import logger from "./utils/logger";
 import config from "./config";
 
 const storage = new SimpleFsStorageProvider(config.storage);
@@ -15,9 +16,9 @@ AutojoinRoomsMixin.setupOnClient(client);
 export default async function () {
   client
     .start()
-    .then(() => console.log("Bot started!"))
+    .then(() => logger.info("Bot started!"))
     .catch((e) => {
-      console.log(e);
+      logger.error("Start", e);
     });
 }
 
@@ -72,6 +73,11 @@ async function handleCommand(roomId, event) {
       roomId: roomId,
       address: ""
     });
+  } else if (user.roomId !== roomId) {
+    logger.warn(
+      `update ${event.sender}: old roomId ${user.roomId}, new roomId ${roomId}`
+    );
+    user.update({ roomId: roomId });
   }
 
   if (body === "!start") {
@@ -110,6 +116,6 @@ async function handleCommand(roomId, event) {
 }
 
 client.on("room.join", (roomId) => {
-  console.log("room.join", roomId);
+  logger.info(`room.join ${roomId}`);
   commands.start(roomId);
 });

@@ -16,7 +16,8 @@
     "@polkadot/util-crypto": "^10.1.1",
     "matrix-bot-sdk": "^0.6.1",
     "sequelize": "^6.21.3",
-    "sqlite3": "^5.0.10"
+    "sqlite3": "^5.0.10",
+    "winston": "^3.8.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.9",

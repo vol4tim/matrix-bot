@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import logger from "./utils/logger";
 
 const db = {
   read() {
@@ -8,7 +9,7 @@ const db = {
         fs.readFileSync(path.resolve(__dirname, "../files/db.txt"))
       );
     } catch (error) {
-      console.log(error);
+      logger.error("read db", error);
       return { data: null, time: null };
     }
   },
