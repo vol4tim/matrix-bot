@@ -34,7 +34,7 @@ const commands = {
     session[roomId] = "start";
     return sendMessage(
       roomId,
-      "Good morning old version of living organism! Write down your Robonomics account address (if you want to try a golden rain on your skin)"
+      "Good morning old version of living organism! Write down your Robonomics account address"
     );
   },
   update(roomId) {
