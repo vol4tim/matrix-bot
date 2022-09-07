@@ -189,7 +189,10 @@ async function handleCommand(roomId, event) {
         return commands.addressParachain(roomId);
       }
     } else if (session[roomId] === "useTicket") {
-      const months = Number(body);
+      let months = Number(body);
+      if (months > 36) {
+        months = 36;
+      }
 
       let course;
       try {
