@@ -4,7 +4,7 @@ import User from "./models/user";
 import Ticket, { status } from "./models/ticket";
 import logger from "./utils/logger";
 import Web3 from "web3";
-import { getPriceXRT } from "../utils/tools";
+import { getPriceXRT } from "./utils/tools";
 
 function getRandomFloat(min, max, decimals) {
   const str = (Math.random() * (max - min) + min).toFixed(decimals);
