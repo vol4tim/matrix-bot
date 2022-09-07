@@ -196,7 +196,7 @@ async function handleCommand(roomId, event) {
 
       let course;
       try {
-        course = await getPriceXRT();
+        course = 100 / (await getPriceXRT());
       } catch (error) {
         logger.error("get price xrt", error);
         await sendMessage(
