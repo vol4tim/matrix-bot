@@ -8,7 +8,10 @@ const User = db.sequelize.define("user", {
     type: db.Sequelize.STRING,
     unique: true
   },
-  address: {
+  addressParachain: {
+    type: db.Sequelize.STRING
+  },
+  addressEthereum: {
     type: db.Sequelize.STRING
   }
 });
