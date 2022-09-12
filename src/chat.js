@@ -201,7 +201,7 @@ async function handleCommand(roomId, event) {
         logger.error("get price xrt", error);
         await sendMessage(
           roomId,
-          "На данный момент курс токена не доступен. Попробуйте позже."
+          "Current XRT price is not available at the moment. Try later."
         );
         session[roomId] = null;
         return;
@@ -219,7 +219,10 @@ async function handleCommand(roomId, event) {
         amount,
         status: status.CALC
       });
-      await sendMessage(roomId, `Ticket #${ticket.id} for execution.`);
+      await sendMessage(
+        roomId,
+        `Ticket #${ticket.id} for execution. Wait for your tokens. Thank you.`
+      );
       session[roomId] = null;
     }
   }
