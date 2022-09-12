@@ -3,7 +3,7 @@ import Ticket, { chains, status } from "../models/ticket";
 import { getSender, getBalanceXrt, transferXrt } from "../utils/web3";
 import Web3 from "web3";
 import { toUnit } from "../utils/tools";
-import logger from "./utils/logger";
+import logger from "../utils/logger";
 
 // function timeout(sec) {
 //   return new Promise((resolve) => {
