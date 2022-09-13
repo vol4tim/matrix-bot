@@ -1,4 +1,5 @@
 import db from "./db";
+import BlackList from "./blackList";
 
 const User = db.sequelize.define("user", {
   roomId: {
@@ -15,5 +16,20 @@ const User = db.sequelize.define("user", {
     type: db.Sequelize.STRING
   }
 });
+
+export async function getUsers() {
+  User.hasMany(BlackList, { primaryKey: "id" });
+  BlackList.belongsTo(User, { foreignKey: "userId" });
+  const result = await User.findAll({
+    include: {
+      model: BlackList
+    },
+    where: {
+      "$blackLists.id$": null
+    },
+    raw: true
+  });
+  return result;
+}
 
 export default User;

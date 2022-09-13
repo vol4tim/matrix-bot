@@ -1,4 +1,4 @@
-import User from "../models/user";
+import { getUsers } from "../models/user";
 import Ticket, { chains, status } from "../models/ticket";
 import dayjs from "dayjs";
 
@@ -25,7 +25,7 @@ export const isRequireBot = true;
 export default async function (bot) {
   const start = dayjs().startOf("month").valueOf();
   // const start = dayjs("01-07-2022", "MM-DD-YYYY").valueOf();
-  const users = await User.findAll();
+  const users = await getUsers();
   for (const user of users) {
     if (!(await isTicket(user.id, start))) {
       await addTicket(user.id, start);
