@@ -18,14 +18,19 @@ const User = db.sequelize.define("user", {
 });
 
 export async function getUsers() {
-  User.hasMany(BlackList, { primaryKey: "id" });
-  BlackList.belongsTo(User, { foreignKey: "userId" });
+  User.hasOne(BlackList, {
+    foreignKey: "userId",
+    sourceKey: "userId",
+    as: "black"
+  });
+  BlackList.belongsTo(User);
   const result = await User.findAll({
     include: {
-      model: BlackList
+      model: BlackList,
+      as: "black"
     },
     where: {
-      "$blackLists.id$": null
+      "$black.id$": null
     },
     raw: true
   });
