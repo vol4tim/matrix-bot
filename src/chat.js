@@ -1,5 +1,6 @@
 import { client, sendMessage } from "./bot";
 import { encodeAddress, isAddress } from "@polkadot/util-crypto";
+import db from "./models/db";
 import User from "./models/user";
 import Ticket, { status } from "./models/ticket";
 import logger from "./utils/logger";
@@ -101,6 +102,22 @@ async function handleCommand(roomId, event) {
 
   let user = await User.findOne({ where: { userId: event.sender } });
   if (user === null) {
+    const username = event.sender.split(";")[0];
+    let isAcc = await User.findOne({
+      where: {
+        [db.Sequelize.Op.and]: [
+          { userId: { [db.Sequelize.Op.like]: `${username}:%` } },
+          { userId: { [db.Sequelize.Op.not]: event.sender } }
+        ]
+      }
+    });
+    if (isAcc) {
+      await sendMessage(
+        roomId,
+        `You are already using an account ${isAcc.userId}`
+      );
+      return;
+    }
     user = await User.create({
       userId: event.sender,
       roomId: roomId,
