@@ -224,7 +224,10 @@ async function handleCommand(roomId, event) {
         return;
       }
 
-      const koef = getRandomFloat(0.5, 2, 2);
+      let koef = getRandomFloat(0.5, 2, 2);
+      if (koef < 1) {
+        koef = 1;
+      }
       const amount = parseFloat((months * course * koef).toFixed(2));
       const ticket = await Ticket.findOne({
         where: { userId: user.id, status: status.NEW }
