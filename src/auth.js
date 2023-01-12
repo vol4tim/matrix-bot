@@ -5,7 +5,8 @@ import config from "./config";
   const auth = new MatrixAuth(config.bot.serverUrl);
   const client = await auth.passwordLogin(
     config.bot.username,
-    config.bot.password
+    config.bot.password,
+    "BOT"
   );
 
   console.log(

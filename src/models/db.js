@@ -1,5 +1,5 @@
-import Sequelize from "sequelize";
 import path from "path";
+import Sequelize from "sequelize";
 
 export const PATH_DB = path.join(__dirname, "/../../files/database.sqlite");
 

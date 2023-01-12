@@ -1,11 +1,11 @@
 import {
-  MatrixClient,
-  SimpleFsStorageProvider,
   AutojoinRoomsMixin,
-  RustSdkCryptoStorageProvider
+  MatrixClient,
+  RustSdkCryptoStorageProvider,
+  SimpleFsStorageProvider
 } from "matrix-bot-sdk";
-import logger from "./utils/logger";
 import config from "./config";
+import logger from "./utils/logger";
 
 const storage = new SimpleFsStorageProvider(config.bot.storage);
 const cryptoProvider = config.bot.crypto

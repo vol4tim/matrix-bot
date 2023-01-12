@@ -1,9 +1,9 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { Keyring } from "@polkadot/keyring";
-import { encodeAddress } from "@polkadot/util-crypto";
 import { bnToBn } from "@polkadot/util";
-import logger from "./logger";
+import { encodeAddress } from "@polkadot/util-crypto";
 import config from "../config";
+import logger from "./logger";
 
 let provider;
 let api;

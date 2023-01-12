@@ -1,5 +1,5 @@
-import db from "./db";
 import BlackList from "./blackList";
+import db from "./db";
 
 const User = db.sequelize.define("user", {
   roomId: {
