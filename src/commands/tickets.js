@@ -1,5 +1,5 @@
 import { sendMessage } from "../bot";
-import Ticket from "../models/ticket";
+import Ticket, { status } from "../models/ticket";
 
 export async function tickets(roomId, user) {
   const result = await Ticket.findAll({
