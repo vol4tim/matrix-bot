@@ -30,8 +30,7 @@ export async function getUsers() {
       as: "black"
     },
     where: {
-      "$black.id$": null,
-      id: 2
+      "$black.id$": null
     },
     raw: true
   });
