@@ -1,54 +1,57 @@
-import Web3 from "web3";
+import { bnToBn } from "@polkadot/util";
 import Ticket, { chains, status } from "../models/ticket";
 import User from "../models/user";
 import logger from "../utils/logger";
+import {
+  chain,
+  getBalance,
+  getSender,
+  sendToVesting
+} from "../utils/parachain";
 import { toUnit } from "../utils/tools";
-import { getBalanceXrt, getSender, transferXrt } from "../utils/web3";
-
-// function timeout(sec) {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve();
-//     }, sec);
-//   });
-// }
 
 export const isRequireBot = true;
 
 export default async function (bot) {
+  await chain();
   const sender = getSender();
   const tickets = await Ticket.findAll({ where: { status: status.CALC } });
   for (const ticket of tickets) {
     const user = await User.findOne({ where: { id: ticket.userId } });
     await ticket.update({ status: status.PROCCESS });
-    try {
-      if (ticket.chain === chains.ETH) {
-        const amount = Web3.utils.toBN(toUnit(ticket.amount, 9));
-        const balance = Web3.utils.toBN(await getBalanceXrt(sender));
-        logger.info(`send eth ${user.addressEthereum} ${ticket.amount}`);
-        if (balance.gte(amount)) {
-          const tx = await transferXrt(user.addressEthereum, amount);
-          await ticket.update({ status: status.SUCCESS, tx: tx });
-          logger.info(`tx: ${tx}`);
-        } else {
-          logger.error(
-            `low balance ${balance.toString()} require ${amount.toString()}`
-          );
+    if (ticket.chain === chains.ROB) {
+      const amount = bnToBn(toUnit(ticket.amount, 9));
+      let balance;
+      try {
+        balance = await getBalance(sender);
+      } catch (error) {
+        logger.error(`update status #${ticket.id}`, error);
+      }
+      logger.info(`send to vesting ${user.addressParachain} ${ticket.amount}`);
+      if (balance && balance.gte(amount)) {
+        let tx;
+        try {
+          tx = await sendToVesting(user.addressParachain, amount);
+          await ticket.update({
+            status: status.SUCCESS,
+            tx: `${tx.blockNumber}-${tx.txIndex}`
+          });
+          logger.info(`tx: ${tx.blockNumber}-${tx.txIndex}`);
+        } catch (error) {
+          logger.error(`send from ticket #${ticket.id}`, error);
+          await ticket.update({ status: status.FAIL });
         }
       } else {
-        // console.log("send para", user.addressParachain, ticket.amount);
-        // await timeout(3000);
-        // await ticket.update({ status: status.SUCCESS, tx: "txp.1233" });
+        logger.error(
+          `low balance ${balance.toString()} require ${amount.toString()}`
+        );
       }
-    } catch (error) {
-      logger.error(`send from ticket #${ticket.id}`, error);
-      await ticket.update({ status: status.CALC });
     }
     if (ticket.tx) {
       await bot.sendMessage(
         user.roomId,
-        `Ticket executed: https://etherscan.io/tx/${ticket.tx}`,
-        `Ticket executed: <a href="https://etherscan.io/tx/${ticket.tx}">view explorer</a>`
+        `Ticket executed: https://robonomics.subscan.io/extrinsic/${ticket.tx}`,
+        `Ticket executed: <a href="https://robonomics.subscan.io/extrinsic/${ticket.tx}">view explorer</a>`
       );
     }
   }

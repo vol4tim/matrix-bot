@@ -22,6 +22,10 @@ const Ticket = db.sequelize.define("ticket", {
     type: db.Sequelize.NUMBER,
     default: 0
   },
+  employment: {
+    type: db.Sequelize.NUMBER,
+    default: 0
+  },
   koef: {
     type: db.Sequelize.NUMBER,
     default: 0
@@ -43,7 +47,8 @@ export const status = {
   CALC: 2,
   PROCCESS: 3,
   SUCCESS: 4,
-  FAIL: 5
+  FAIL: 5,
+  SKIP: 6
 };
 
 export default Ticket;

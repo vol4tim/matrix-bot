@@ -1,15 +1,23 @@
-import { getUsers } from "../models/user";
-import Ticket, { chains, status } from "../models/ticket";
 import dayjs from "dayjs";
+import Employment from "../models/employment";
+import Ticket, { chains, status } from "../models/ticket";
+import { getUsers } from "../models/user";
 
 async function addTicket(userId, start) {
+  const employment = await Employment.findOne({
+    where: { userId: userId }
+  });
+  if (!employment || Number(employment.employment) <= 0) {
+    return;
+  }
   return await Ticket.create({
     userId: userId,
-    chain: chains.ETH,
+    chain: chains.ROB,
     status: status.NEW,
     date: start,
     amount: 0,
     koef: 0,
+    employment: employment.employment,
     tx: null
   });
 }
@@ -19,8 +27,6 @@ async function isTicket(userId, start) {
     where: { userId: userId, date: start }
   });
 }
-
-export const isRequireBot = true;
 
 function getStart() {
   const currentMonth = Number(dayjs().format("M"));
@@ -39,16 +45,20 @@ function getStart() {
   return start.startOf("month").valueOf();
 }
 
+export const isRequireBot = true;
+
 export default async function (bot) {
   const start = getStart();
   const users = await getUsers();
   for (const user of users) {
     if (!(await isTicket(user.id, start))) {
-      await addTicket(user.id, start);
-      await bot.sendMessage(
-        user.roomId,
-        `You got a ticket, to use it run the command !useTicket`
-      );
+      const t = await addTicket(user.id, start);
+      if (t) {
+        await bot.sendMessage(
+          user.roomId,
+          `You got a ticket, to use it run the command !useTicket`
+        );
+      }
     }
   }
 }

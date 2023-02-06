@@ -4,6 +4,7 @@ import { bnToBn } from "@polkadot/util";
 import { encodeAddress } from "@polkadot/util-crypto";
 import config from "../config";
 import logger from "./logger";
+import { toUnit } from "./tools";
 
 let provider;
 let api;
@@ -33,6 +34,14 @@ export function getAccounts() {
     };
   });
   return accounts;
+}
+
+export function getSender() {
+  return account.address;
+}
+
+export async function getCurentBlock() {
+  return (await api.rpc.chain.getBlock()).block.header.number.toString();
 }
 
 export async function signAndSend(account, tx, options = {}) {
@@ -84,6 +93,23 @@ export async function transfer(address, amount) {
     throw new Error("Insufficient funds");
   }
   const transfer = api.tx.balances.transfer(address, amount);
+  const result = await signAndSend(account, transfer);
+  logger.info(JSON.stringify(result, null, 2));
+  return result;
+}
+
+export async function sendToVesting(address, value) {
+  logger.info(`send to vesting ${address} ${value}`);
+  const balance = await getBalance(account.address);
+  if (balance.lte(bnToBn(value))) {
+    throw new Error("Insufficient funds");
+  }
+  const currentBlock = await getCurentBlock();
+  const transfer = api.tx.vesting.vestedTransfer(address, {
+    locked: value,
+    perBlock: bnToBn(toUnit(config.parachain.vestingPerBlock, 9)),
+    startingBlock: currentBlock
+  });
   const result = await signAndSend(account, transfer);
   logger.info(JSON.stringify(result, null, 2));
   return result;
