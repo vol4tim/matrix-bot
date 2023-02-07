@@ -34,9 +34,9 @@ export function calcBonus(months, employment, priceXRT) {
   if (months > 36) {
     months = 36;
   }
-  if (employment < 100 && months > 12) {
-    months = 12;
-  }
+  // if (employment < 100 && months > 12) {
+  //   months = 12;
+  // }
   let maxKoef = 1 + months * 0.05;
   if (maxKoef > 2.4) {
     maxKoef = 2.4;
