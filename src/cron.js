@@ -14,10 +14,19 @@ import logger from "./utils/logger";
     const command = require(file);
     let bot;
     if (command.isRequireBot) {
+      const cbs = {};
       const ipc = new IpcClient(2000);
+      ipc.on("sendMessageResponse", (data) => {
+        if (cbs[data.id]) {
+          cbs[data.id](data);
+        }
+      });
       bot = {
-        sendMessage(roomId, text, html) {
+        sendMessage(roomId, text, html, cb) {
+          const id = `${roomId}-${Date.now()}`;
+          cbs[id] = cb;
           ipc.send("sendMessage", {
+            id: id,
             roomId,
             text,
             html
@@ -27,6 +36,7 @@ import logger from "./utils/logger";
     }
     await db.sequelize.sync();
     await command.default(bot);
+  } else {
+    process.exit(0);
   }
-  process.exit(0);
 })();
