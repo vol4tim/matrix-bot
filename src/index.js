@@ -26,6 +26,14 @@ ipc.on("sendMessage", (message, reply) => {
           "sendMessageResponse"
         );
       });
+  } else {
+    reply(
+      {
+        id: message.id,
+        error: "Not Found message"
+      },
+      "sendMessageResponse"
+    );
   }
 });
 

@@ -23,14 +23,18 @@ import logger from "./utils/logger";
       });
       bot = {
         sendMessage(roomId, text, html, cb) {
-          const id = `${roomId}-${Date.now()}`;
-          cbs[id] = cb;
-          ipc.send("sendMessage", {
-            id: id,
-            roomId,
-            text,
-            html
-          });
+          if (roomId) {
+            const id = `${roomId}-${Date.now()}`;
+            cbs[id] = cb;
+            ipc.send("sendMessage", {
+              id: id,
+              roomId,
+              text,
+              html
+            });
+          } else {
+            cb({ error: "Not roomId" });
+          }
         }
       };
     }
